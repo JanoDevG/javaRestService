@@ -6,10 +6,8 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "phones")
 public class Phone {
-
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,15 +21,14 @@ public class Phone {
     @JsonProperty("contrycode")
     private String countryCode;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     public Phone() {
     }
 
-    public Phone(UUID id, String number, String cityCode, String countryCode, User user) {
-        this.id = id;
+    public Phone(String number, String cityCode, String countryCode, User user) {
         this.number = number;
         this.cityCode = cityCode;
         this.countryCode = countryCode;
@@ -40,10 +37,6 @@ public class Phone {
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getNumber() {

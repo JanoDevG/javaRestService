@@ -8,11 +8,10 @@ import cl.janodevg.restService.services.exceptions.ResourceNotFoundException;
 import cl.janodevg.restService.services.exceptions.WeakPasswordException;
 import cl.janodevg.restService.utils.EmailValidator;
 import cl.janodevg.restService.utils.PasswordValidator;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,13 +40,19 @@ public class UserService {
             if (!PasswordValidator.isValid(user.getPassword())) { // verify password
                 throw new WeakPasswordException("contraseña no cumple formato mínimo deseado.");
             }
+            user.setCreated(LocalDateTime.now());
+            user.setModified(LocalDateTime.now());
+            user.setLastLogin(LocalDateTime.now());
+            //TODO concat JWT
+            user.setIsActive(true);
             return repository.save(user);
         } else {
             throw new EmailNotValidException("formato de correo no es válido.");
         }
     }
 
-    public User updateUser(User user, String email) throws EmailNotValidException, WeakPasswordException, ResourceNotFoundException {
+    public User updateUser(User user, String email) throws EmailNotValidException, WeakPasswordException,
+            ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
             optionalUser.get().setName(user.getName());
@@ -67,6 +72,8 @@ public class UserService {
                     throw new WeakPasswordException("La contraseña nueva es muy débil.");
                 }
             }
+            updateDateLogin(user);
+            user.setModified(LocalDateTime.now());
             return repository.save(optionalUser.get());
         } else {
             throw new ResourceNotFoundException("no se registra ningún usuario con el email: "
@@ -74,7 +81,7 @@ public class UserService {
         }
     }
 
-    public void deleteUser(String email) {
+    public void deleteUser(String email) throws ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
             repository.delete(optionalUser.get());
@@ -82,6 +89,10 @@ public class UserService {
             throw new ResourceNotFoundException("No se encuentra registrado algún usuario con el email: "
                     .concat(email));
         }
+    }
+
+    public void updateDateLogin(User user) {
+        user.setLastLogin(LocalDateTime.now());
     }
 
 }

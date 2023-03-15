@@ -1,7 +1,9 @@
 package cl.janodevg.restService.entities.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,26 +23,34 @@ public class User {
 
     private String password;
 
-    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Phone> phones = new ArrayList<>();
+
+    private LocalDateTime created;
+
+    private LocalDateTime modified;
+
+    @JsonProperty("last_login")
+    private LocalDateTime lastLogin;
+
+    private String JWT;
+
+    @JsonProperty("isactive")
+    private boolean isActive;
 
     public User() {
     }
 
-    public User(UUID id, String name, String email, String password, List<Phone> phones) {
-        this.id = id;
+    public User(String name, String email, String password, List<Phone> phones, LocalDateTime created) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phones = phones;
+        this.created = created;
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -73,5 +83,45 @@ public class User {
 
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getModified() {
+        return modified;
+    }
+
+    public void setModified(LocalDateTime modified) {
+        this.modified = modified;
+    }
+
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getJWT() {
+        return JWT;
+    }
+
+    public void setJWT(String JWT) {
+        this.JWT = JWT;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean active) {
+        isActive = active;
     }
 }
