@@ -16,7 +16,7 @@ public class JwtUtil {
 
     private static final String SECRET_KEY = generateASecureKey();
 
-    public String generateToken(String subject) {
+    public static String generateToken(String subject) {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -26,7 +26,7 @@ public class JwtUtil {
     }
 
     // generate a random secure secret key
-    private static String generateASecureKey() {
+    static protected String generateASecureKey() {
         Supplier<String> secretKeySupplier = () -> {
             byte[] keyBytes = new byte[32];
             SecureRandom random = new SecureRandom();
@@ -36,7 +36,7 @@ public class JwtUtil {
         return secretKeySupplier.get();
     }
 
-    public boolean validateToken(String token) {
+    public static boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token.replace("Bearer ", ""));
             return true;
