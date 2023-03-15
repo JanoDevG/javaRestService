@@ -1,5 +1,6 @@
 package cl.janodevg.restService.entities.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -11,6 +12,7 @@ public class Phone {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JsonIgnore
     private UUID id;
 
     private String number;
@@ -22,7 +24,8 @@ public class Phone {
     private String countryCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     public Phone() {

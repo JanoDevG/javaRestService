@@ -23,15 +23,15 @@ public class User {
 
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Phone> phones = new ArrayList<>();
 
-    private LocalDateTime created;
+    private String created;
 
-    private LocalDateTime modified;
+    private String modified;
 
     @JsonProperty("last_login")
-    private LocalDateTime lastLogin;
+    private String lastLogin;
 
     private String JWT;
 
@@ -41,7 +41,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, List<Phone> phones, LocalDateTime created) {
+    public User(String name, String email, String password, List<Phone> phones, String created) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -85,27 +85,27 @@ public class User {
         this.phones = phones;
     }
 
-    public LocalDateTime getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
-    public LocalDateTime getModified() {
+    public String getModified() {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    public void setModified(String modified) {
         this.modified = modified;
     }
 
-    public LocalDateTime getLastLogin() {
+    public String getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(LocalDateTime lastLogin) {
+    public void setLastLogin(String lastLogin) {
         this.lastLogin = lastLogin;
     }
 

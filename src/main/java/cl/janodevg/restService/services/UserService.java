@@ -10,6 +10,7 @@ import cl.janodevg.restService.utils.EmailValidator;
 import cl.janodevg.restService.utils.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,15 +22,18 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return repository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public User findByEmail(String email) throws ResourceNotFoundException {
         return repository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(
                 "no se encuentra registrado algún usuario con el email: ".concat(email)));
     }
 
+    @Transactional
     public User createdUser(User user) throws EmailNotValidException, WeakPasswordException,
             EmailAlreadyExistsException {
         if (EmailValidator.isValid(user.getEmail())) { // verify email format
@@ -40,17 +44,19 @@ public class UserService {
             if (!PasswordValidator.isValid(user.getPassword())) { // verify password
                 throw new WeakPasswordException("contraseña no cumple formato mínimo deseado.");
             }
-            user.setCreated(LocalDateTime.now());
-            user.setModified(LocalDateTime.now());
-            user.setLastLogin(LocalDateTime.now());
+            user.setCreated(LocalDateTime.now().toString());
+            user.setModified(LocalDateTime.now().toString());
+            user.setLastLogin(LocalDateTime.now().toString());
             //TODO concat JWT
             user.setIsActive(true);
+            user.getPhones().get(0).setUser(user);
             return repository.save(user);
         } else {
             throw new EmailNotValidException("formato de correo no es válido.");
         }
     }
 
+    @Transactional
     public User updateUser(User user, String email) throws EmailNotValidException, WeakPasswordException,
             ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
@@ -73,7 +79,7 @@ public class UserService {
                 }
             }
             updateDateLogin(user);
-            user.setModified(LocalDateTime.now());
+            user.setModified(LocalDateTime.now().toString());
             return repository.save(optionalUser.get());
         } else {
             throw new ResourceNotFoundException("no se registra ningún usuario con el email: "
@@ -81,6 +87,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void deleteUser(String email) throws ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -92,7 +99,7 @@ public class UserService {
     }
 
     public void updateDateLogin(User user) {
-        user.setLastLogin(LocalDateTime.now());
+        user.setLastLogin(LocalDateTime.now().toString());
     }
 
 }
