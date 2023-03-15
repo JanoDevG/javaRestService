@@ -40,7 +40,7 @@ public class UI {
     public ResponseEntity<Response> createUser(@RequestBody User user,
                                                @RequestHeader("Authorization") String token) {
         if (jwtUtil.validateToken(token)) {
-            return new ResponseEntity<>(new Response(service.createdUser(user)), HttpStatus.CREATED);
+            return new ResponseEntity<>(new Response(service.createdUser(user, token)), HttpStatus.CREATED);
         } else {
             throw new UnauthorizedException("JWT no válido.");
         }
@@ -51,7 +51,7 @@ public class UI {
     public ResponseEntity<Response> updateUser(@RequestBody User user, @RequestParam String email,
                                                @RequestHeader("Authorization") String token) {
         if (jwtUtil.validateToken(token)) {
-            return ResponseEntity.ok(new Response(service.updateUser(user, email)));
+            return ResponseEntity.ok(new Response(service.updateUser(user, email, token)));
         } else {
             throw new UnauthorizedException("JWT no válido.");
         }

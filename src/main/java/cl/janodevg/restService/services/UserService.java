@@ -34,7 +34,7 @@ public class UserService {
     }
 
     @Transactional
-    public User createdUser(User user) throws EmailNotValidException, WeakPasswordException,
+    public User createdUser(User user, String jwt) throws EmailNotValidException, WeakPasswordException,
             EmailAlreadyExistsException {
         if (EmailValidator.isValid(user.getEmail())) { // verify email format
             if (repository.findByEmail(user.getEmail()).isPresent()) {
@@ -47,7 +47,7 @@ public class UserService {
             user.setCreated(LocalDateTime.now().toString());
             user.setModified(LocalDateTime.now().toString());
             user.setLastLogin(LocalDateTime.now().toString());
-            //TODO concat JWT
+            user.setJWT(jwt.replace("Bearer ", ""));
             user.setIsActive(true);
             user.getPhones().get(0).setUser(user);
             return repository.save(user);
@@ -57,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(User user, String email) throws EmailNotValidException, WeakPasswordException,
+    public User updateUser(User user, String email, String jwt) throws EmailNotValidException, WeakPasswordException,
             ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -80,6 +80,7 @@ public class UserService {
             }
             updateDateLogin(user);
             user.setModified(LocalDateTime.now().toString());
+            user.setJWT(jwt.replace("Bearer ", ""));
             return repository.save(optionalUser.get());
         } else {
             throw new ResourceNotFoundException("no se registra ningún usuario con el email: "
