@@ -1,9 +1,10 @@
 package cl.janodevg.restService.entities.models;
 
+import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
+import cl.janodevg.restService.services.validations.MinCharacterPasswordValidationAnnotation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,8 +20,10 @@ public class User {
     private String name;
 
     @Column(unique = true)
+    @EmailValidationAnnotation
     private String email;
 
+    @MinCharacterPasswordValidationAnnotation
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -35,7 +38,7 @@ public class User {
 
     private String JWT;
 
-    @JsonProperty("isactive")
+    @JsonProperty("isActive")
     private boolean isActive;
 
     public User() {

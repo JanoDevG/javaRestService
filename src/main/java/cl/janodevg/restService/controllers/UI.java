@@ -5,13 +5,18 @@ import cl.janodevg.restService.entities.Response;
 import cl.janodevg.restService.entities.models.User;
 import cl.janodevg.restService.services.UserService;
 import cl.janodevg.restService.services.exceptions.UnauthorizedException;
+import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@Validated
 public class UI {
 
     @Autowired
@@ -21,7 +26,7 @@ public class UI {
     private JwtUtil jwtUtil;
 
     @GetMapping("/user")
-    public ResponseEntity<Response> getUsers(@RequestParam(required = false) String email,
+    public ResponseEntity<Response> getUsers(@EmailValidationAnnotation @RequestParam  String email,
                                              @RequestHeader("Authorization") String token) {
         if (jwtUtil.validateToken(token)) {
             if (email == null) {
@@ -37,7 +42,7 @@ public class UI {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<Response> createUser(@RequestBody User user,
+    public ResponseEntity<Response> createUser(@RequestBody @Valid User user,
                                                @RequestHeader("Authorization") String token) {
         if (jwtUtil.validateToken(token)) {
             return new ResponseEntity<>(new Response(service.createdUser(user, token)), HttpStatus.CREATED);
@@ -48,7 +53,7 @@ public class UI {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<Response> updateUser(@RequestBody User user, @RequestParam String email,
+    public ResponseEntity<Response> updateUser(@RequestBody @Valid User user, @EmailValidationAnnotation @RequestParam String  email,
                                                @RequestHeader("Authorization") String token) {
         if (jwtUtil.validateToken(token)) {
             return ResponseEntity.ok(new Response(service.updateUser(user, email, token)));
@@ -59,7 +64,7 @@ public class UI {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<Response> deleteUser(@RequestParam String email,
+    public ResponseEntity<Response> deleteUser(@EmailValidationAnnotation @RequestParam String email,
                                                @RequestHeader("Authorization") String token) {
         if (jwtUtil.validateToken(token)) {
             service.deleteUser(email);

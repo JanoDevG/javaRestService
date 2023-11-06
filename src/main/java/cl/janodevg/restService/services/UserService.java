@@ -6,8 +6,6 @@ import cl.janodevg.restService.services.exceptions.EmailAlreadyExistsException;
 import cl.janodevg.restService.services.exceptions.EmailNotValidException;
 import cl.janodevg.restService.services.exceptions.ResourceNotFoundException;
 import cl.janodevg.restService.services.exceptions.WeakPasswordException;
-import cl.janodevg.restService.utils.EmailValidator;
-import cl.janodevg.restService.utils.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,24 +34,17 @@ public class UserService {
     @Transactional
     public User createdUser(User user, String jwt) throws EmailNotValidException, WeakPasswordException,
             EmailAlreadyExistsException {
-        if (EmailValidator.isValid(user.getEmail())) { // verify email format
-            if (repository.findByEmail(user.getEmail()).isPresent()) {
-                throw new EmailAlreadyExistsException("el correo informado: ".concat(user.getEmail())
-                        .concat(" ya se encuentra registrado."));
-            }
-            if (!PasswordValidator.isValid(user.getPassword())) { // verify password
-                throw new WeakPasswordException("contraseña no cumple formato mínimo deseado.");
-            }
-            user.setCreated(LocalDateTime.now().toString());
-            user.setModified(LocalDateTime.now().toString());
-            user.setLastLogin(LocalDateTime.now().toString());
-            user.setJWT(jwt.replace("Bearer ", ""));
-            user.setIsActive(true);
-            user.getPhones().get(0).setUser(user);
-            return repository.save(user);
-        } else {
-            throw new EmailNotValidException("formato de correo no es válido.");
+        if (repository.findByEmail(user.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException("el correo informado: ".concat(user.getEmail())
+                    .concat(" ya se encuentra registrado."));
         }
+        user.setCreated(LocalDateTime.now().toString());
+        user.setModified(LocalDateTime.now().toString());
+        user.setLastLogin(LocalDateTime.now().toString());
+        user.setJWT(jwt.replace("Bearer ", ""));
+        user.setIsActive(true);
+        user.getPhones().get(0).setUser(user);
+        return repository.save(user);
     }
 
     @Transactional
@@ -64,19 +55,11 @@ public class UserService {
             optionalUser.get().setName(user.getName());
             // update email flow
             if (!user.getEmail().equals(optionalUser.get().getEmail())) { //verify updating email
-                if (EmailValidator.isValid(user.getEmail())) { // verify email format
-                    optionalUser.get().setEmail(user.getEmail());
-                } else {
-                    throw new EmailNotValidException("formato de correo no es válido.");
-                }
+                optionalUser.get().setEmail(user.getEmail());
             }
             // update password flow
             if (!user.getPassword().equals(optionalUser.get().getPassword())) { // verify updating password
-                if (PasswordValidator.isValid(user.getPassword())) { // verify a valid password
-                    optionalUser.get().setPassword(user.getPassword());
-                } else {
-                    throw new WeakPasswordException("La contraseña nueva es muy débil.");
-                }
+                optionalUser.get().setPassword(user.getPassword());
             }
             updateDateLogin(user);
             user.setModified(LocalDateTime.now().toString());
