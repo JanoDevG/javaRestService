@@ -1,7 +1,7 @@
 package cl.janodevg.restService.controllers;
 
 
-import cl.janodevg.restService.configurations.JwtUtil;
+import cl.janodevg.restService.utils.JwtUtil;
 import cl.janodevg.restService.entities.Response;
 import cl.janodevg.restService.entities.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/token")
 public class TokenController {
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
     @PostMapping("/login")
     public ResponseEntity<Response> login(@RequestBody User user) {
-        return ResponseEntity.ok(new Response(jwtUtil.generateToken(user.getName())));
+        return ResponseEntity.ok(new Response(JwtUtil.generateToken(user.getName())));
     }
 }

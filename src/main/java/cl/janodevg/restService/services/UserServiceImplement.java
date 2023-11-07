@@ -6,7 +6,11 @@ import cl.janodevg.restService.services.exceptions.EmailAlreadyExistsException;
 import cl.janodevg.restService.services.exceptions.EmailNotValidException;
 import cl.janodevg.restService.services.exceptions.ResourceNotFoundException;
 import cl.janodevg.restService.services.exceptions.WeakPasswordException;
+import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
+import cl.janodevg.restService.utils.ObtainRequestContext;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +19,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserServiceImplement implements IUserService{
 
     @Autowired
+    @SuppressWarnings("unused")
     private UserRepository repository;
 
     @Transactional(readOnly = true)
@@ -26,29 +31,29 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findByEmail(String email) throws ResourceNotFoundException {
+    public User findUserByEmail(@NonNull @EmailValidationAnnotation String email) throws ResourceNotFoundException {
         return repository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(
                 "no se encuentra registrado algún usuario con el email: ".concat(email)));
     }
 
     @Transactional
-    public User createdUser(User user, String jwt) throws EmailNotValidException, WeakPasswordException,
+    public User createUser(@NonNull @Valid User user) throws EmailNotValidException, WeakPasswordException,
             EmailAlreadyExistsException {
         if (repository.findByEmail(user.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException("el correo informado: ".concat(user.getEmail())
-                    .concat(" ya se encuentra registrado."));
+            throw new EmailAlreadyExistsException("the email informed: ".concat(user.getEmail())
+                    .concat(" is already registered"));
         }
         user.setCreated(LocalDateTime.now().toString());
         user.setModified(LocalDateTime.now().toString());
         user.setLastLogin(LocalDateTime.now().toString());
-        user.setJWT(jwt.replace("Bearer ", ""));
+        user.setJWT(ObtainRequestContext.obtainRequestAuthorization());
         user.setIsActive(true);
         user.getPhones().get(0).setUser(user);
         return repository.save(user);
     }
 
     @Transactional
-    public User updateUser(User user, String email, String jwt) throws EmailNotValidException, WeakPasswordException,
+    public User updateUser(@NonNull @Valid User user, @EmailValidationAnnotation String email) throws EmailNotValidException, WeakPasswordException,
             ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -63,7 +68,7 @@ public class UserService {
             }
             updateDateLogin(user);
             user.setModified(LocalDateTime.now().toString());
-            user.setJWT(jwt.replace("Bearer ", ""));
+            user.setJWT(ObtainRequestContext.obtainRequestAuthorization());
             return repository.save(optionalUser.get());
         } else {
             throw new ResourceNotFoundException("no se registra ningún usuario con el email: "
@@ -72,7 +77,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String email) throws ResourceNotFoundException {
+    public void deleteUser(@EmailValidationAnnotation String email) throws ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
             repository.delete(optionalUser.get());
@@ -82,7 +87,7 @@ public class UserService {
         }
     }
 
-    public void updateDateLogin(User user) {
+    private void updateDateLogin(User user) {
         user.setLastLogin(LocalDateTime.now().toString());
     }
 

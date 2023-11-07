@@ -1,18 +1,20 @@
-package cl.janodevg.restService.configurations;
+package cl.janodevg.restService.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Supplier;
 
-@Component
-public class JwtUtil {
+public final class JwtUtil {
+
+    private JwtUtil(){
+        throw new UnsupportedOperationException("Utility class must not be instanced.");
+    }
 
     private static final String SECRET_KEY = generateASecureKey();
 

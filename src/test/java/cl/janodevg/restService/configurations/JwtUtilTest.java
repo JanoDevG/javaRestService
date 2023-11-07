@@ -1,5 +1,6 @@
 package cl.janodevg.restService.configurations;
 
+import cl.janodevg.restService.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
