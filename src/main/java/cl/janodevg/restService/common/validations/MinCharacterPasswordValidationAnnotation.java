@@ -1,4 +1,4 @@
-package cl.janodevg.restService.services.validations;
+package cl.janodevg.restService.common.validations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

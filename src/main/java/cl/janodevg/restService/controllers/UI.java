@@ -4,8 +4,8 @@ import cl.janodevg.restService.services.UserService;
 import cl.janodevg.restService.utils.JwtUtil;
 import cl.janodevg.restService.entities.Response;
 import cl.janodevg.restService.entities.models.User;
-import cl.janodevg.restService.services.exceptions.UnauthorizedException;
-import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
+import cl.janodevg.restService.common.exceptions.UnauthorizedException;
+import cl.janodevg.restService.common.validations.EmailValidationAnnotation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class UI {
                 return ResponseEntity.ok(new Response(service.findUserByEmail(email)));
             }
         } else {
-            throw new UnauthorizedException("JWT no válido.");
+            throw new UnauthorizedException("JWT isn't valid.");
         }
 
 
@@ -45,18 +45,18 @@ public class UI {
         if (JwtUtil.validateToken(token)) {
             return new ResponseEntity<>(new Response(service.createUser(user)), HttpStatus.CREATED);
         } else {
-            throw new UnauthorizedException("JWT no válido.");
+            throw new UnauthorizedException("JWT isn't valid");
         }
 
     }
 
-    @PutMapping("/user")
+    @PatchMapping("/user")
     public ResponseEntity<Response> updateUser(@RequestBody @Valid User user, @EmailValidationAnnotation @RequestParam String  email,
                                                @RequestHeader("Authorization") String token) {
         if (JwtUtil.validateToken(token)) {
             return ResponseEntity.ok(new Response(service.updateUser(user, email)));
         } else {
-            throw new UnauthorizedException("JWT no válido.");
+            throw new UnauthorizedException("JWT isn't valid");
         }
 
     }
@@ -66,9 +66,9 @@ public class UI {
                                                @RequestHeader("Authorization") String token) {
         if (JwtUtil.validateToken(token)) {
             service.deleteUser(email);
-            return ResponseEntity.ok(new Response("usuario eliminado"));
+            return ResponseEntity.ok(new Response("user now is inactive."));
         } else {
-            throw new UnauthorizedException("JWT no válido.");
+            throw new UnauthorizedException("JWT isn't valid");
         }
     }
 }

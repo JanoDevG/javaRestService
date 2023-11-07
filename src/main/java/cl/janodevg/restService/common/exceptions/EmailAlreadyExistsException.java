@@ -1,4 +1,4 @@
-package cl.janodevg.restService.services.exceptions;
+package cl.janodevg.restService.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

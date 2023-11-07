@@ -2,11 +2,11 @@ package cl.janodevg.restService.services;
 
 import cl.janodevg.restService.entities.models.User;
 import cl.janodevg.restService.repository.UserRepository;
-import cl.janodevg.restService.services.exceptions.EmailAlreadyExistsException;
-import cl.janodevg.restService.services.exceptions.EmailNotValidException;
-import cl.janodevg.restService.services.exceptions.ResourceNotFoundException;
-import cl.janodevg.restService.services.exceptions.WeakPasswordException;
-import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
+import cl.janodevg.restService.common.exceptions.EmailAlreadyExistsException;
+import cl.janodevg.restService.common.exceptions.EmailNotValidException;
+import cl.janodevg.restService.common.exceptions.ResourceNotFoundException;
+import cl.janodevg.restService.common.exceptions.WeakPasswordException;
+import cl.janodevg.restService.common.validations.EmailValidationAnnotation;
 import cl.janodevg.restService.utils.ObtainRequestContext;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +33,14 @@ public class UserServiceImplement implements UserService {
     @Transactional(readOnly = true)
     public User findUserByEmail(@NonNull @EmailValidationAnnotation String email) throws ResourceNotFoundException {
         return repository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(
-                "no se encuentra registrado algún usuario con el email: ".concat(email)));
+                "Nothing user register with email: ".concat(email)));
     }
 
     @Transactional
     public User createUser(@NonNull @Valid User user) throws EmailNotValidException, WeakPasswordException,
             EmailAlreadyExistsException {
         if (repository.findByEmail(user.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException("the email informed: ".concat(user.getEmail())
+            throw new EmailAlreadyExistsException("The email informed: ".concat(user.getEmail())
                     .concat(" is already registered"));
         }
         user.setCreated(LocalDateTime.now().toString());
@@ -71,7 +71,7 @@ public class UserServiceImplement implements UserService {
             user.setJWT(ObtainRequestContext.obtainRequestAuthorization());
             return repository.save(optionalUser.get());
         } else {
-            throw new ResourceNotFoundException("no se registra ningún usuario con el email: "
+            throw new ResourceNotFoundException("User not found with email:  "
                     .concat(user.getEmail()));
         }
     }
@@ -80,9 +80,9 @@ public class UserServiceImplement implements UserService {
     public void deleteUser(@EmailValidationAnnotation String email) throws ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
-            repository.delete(optionalUser.get());
+            optionalUser.get().setIsActive(false);
         } else {
-            throw new ResourceNotFoundException("No se encuentra registrado algún usuario con el email: "
+            throw new ResourceNotFoundException("Nothing user register with email: "
                     .concat(email));
         }
     }

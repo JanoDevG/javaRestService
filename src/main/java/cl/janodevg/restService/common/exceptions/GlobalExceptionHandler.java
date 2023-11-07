@@ -1,4 +1,4 @@
-package cl.janodevg.restService.services.exceptions;
+package cl.janodevg.restService.common.exceptions;
 
 import cl.janodevg.restService.entities.Response;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

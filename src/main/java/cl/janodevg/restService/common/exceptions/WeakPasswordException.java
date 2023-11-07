@@ -1,12 +1,12 @@
-package cl.janodevg.restService.services.exceptions;
+package cl.janodevg.restService.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class EmailNotValidException extends RuntimeException{
+public class WeakPasswordException extends RuntimeException {
 
-    public EmailNotValidException(String message) {
+    public WeakPasswordException(String message) {
         super(message);
     }
 }

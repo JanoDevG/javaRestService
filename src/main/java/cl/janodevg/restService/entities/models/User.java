@@ -1,7 +1,7 @@
 package cl.janodevg.restService.entities.models;
 
-import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
-import cl.janodevg.restService.services.validations.MinCharacterPasswordValidationAnnotation;
+import cl.janodevg.restService.common.validations.EmailValidationAnnotation;
+import cl.janodevg.restService.common.validations.MinCharacterPasswordValidationAnnotation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 

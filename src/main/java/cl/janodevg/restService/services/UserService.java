@@ -1,7 +1,7 @@
 package cl.janodevg.restService.services;
 
 import cl.janodevg.restService.entities.models.User;
-import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
+import cl.janodevg.restService.common.validations.EmailValidationAnnotation;
 import jakarta.validation.Valid;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
