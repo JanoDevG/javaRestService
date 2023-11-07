@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 @Validated
-public interface IUserService {
+public interface UserService {
 
     List<User> findAllUsers();
     User findUserByEmail(@NonNull @EmailValidationAnnotation String email);

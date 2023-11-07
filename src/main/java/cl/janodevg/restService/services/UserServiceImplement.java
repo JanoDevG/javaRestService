@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImplement implements IUserService{
+public class UserServiceImplement implements UserService {
 
     @Autowired
     @SuppressWarnings("unused")

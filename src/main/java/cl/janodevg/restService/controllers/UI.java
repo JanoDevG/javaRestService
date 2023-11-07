@@ -1,6 +1,6 @@
 package cl.janodevg.restService.controllers;
 
-import cl.janodevg.restService.services.IUserService;
+import cl.janodevg.restService.services.UserService;
 import cl.janodevg.restService.utils.JwtUtil;
 import cl.janodevg.restService.entities.Response;
 import cl.janodevg.restService.entities.models.User;
@@ -9,18 +9,19 @@ import cl.janodevg.restService.services.validations.EmailValidationAnnotation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
 public class UI {
 
     @Autowired
     @SuppressWarnings("unused")
-    private IUserService service;
+    private UserService service;
 
     @GetMapping("/user")
     public ResponseEntity<Response> getUsers(@RequestParam  String email,

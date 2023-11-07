@@ -5,6 +5,7 @@ import cl.janodevg.restService.utils.JwtUtil;
 import cl.janodevg.restService.entities.Response;
 import cl.janodevg.restService.entities.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/token")
+@RequestMapping(value = "/token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public class TokenController {
 
     @PostMapping("/login")
