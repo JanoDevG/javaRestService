@@ -28,7 +28,7 @@ public final class JwtUtil {
     }
 
     // generate a random secure secret key
-    static protected String generateASecureKey() {
+    static String generateASecureKey() {
         Supplier<String> secretKeySupplier = () -> {
             byte[] keyBytes = new byte[32];
             SecureRandom random = new SecureRandom();
@@ -47,7 +47,7 @@ public final class JwtUtil {
         }
     }
 
-    public String extractSubject(String token) {
+    public static String extractSubject(String token) {
         Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
         return claims.getBody().getSubject();
     }
