@@ -6,7 +6,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 public final class ObtainRequestContext {
 
-    private ObtainRequestContext(){
+    ObtainRequestContext(){
         throw new UnsupportedOperationException("Utility class must not be instanced.");
     }
 

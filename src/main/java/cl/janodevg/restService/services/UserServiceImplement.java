@@ -28,11 +28,6 @@ public class UserServiceImplement implements UserService {
     private UserRepository repository;
 
     @Transactional(readOnly = true)
-    public List<User> findAllUsers() {
-        return repository.findAll();
-    }
-
-    @Transactional(readOnly = true)
     public User findUserByEmail(@NonNull @EmailValidationAnnotation String email) throws ResourceNotFoundException {
         return repository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException(
                 "Nothing user register with email: ".concat(email)));

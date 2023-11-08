@@ -11,7 +11,6 @@ import java.util.List;
 @Validated
 public interface UserService {
 
-    List<User> findAllUsers();
     User findUserByEmail(@NonNull @EmailValidationAnnotation String email);
     User createUser(@NonNull @Valid User user);
     User updateUser(@NonNull @Valid User user, @EmailValidationAnnotation String email);

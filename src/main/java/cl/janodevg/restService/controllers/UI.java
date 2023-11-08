@@ -24,14 +24,10 @@ public class UI {
     private UserService service;
 
     @GetMapping("/user")
-    public ResponseEntity<Response> getUsers(@RequestParam  String email,
+    public ResponseEntity<Response> getUsers(@RequestParam String email,
                                              @RequestHeader(value = "Authorization", required = false) String token) {
         if (token != null && JwtUtil.validateToken(token)) {
-            if (email == null) {
-                return ResponseEntity.ok(new Response(service.findAllUsers()));
-            } else {
-                return ResponseEntity.ok(new Response(service.findUserByEmail(email)));
-            }
+            return ResponseEntity.ok(new Response(service.findUserByEmail(email)));
         } else {
             throw new UnauthorizedException("JWT isn't valid or missing.");
         }
@@ -51,7 +47,7 @@ public class UI {
     }
 
     @PatchMapping("/user")
-    public ResponseEntity<Response> updateUser(@RequestBody @Valid User user, @EmailValidationAnnotation @RequestParam String  email,
+    public ResponseEntity<Response> updateUser(@RequestBody @Valid User user, @EmailValidationAnnotation @RequestParam String email,
                                                @RequestHeader(value = "Authorization", required = false) String token) {
         if (token != null && JwtUtil.validateToken(token)) {
             return ResponseEntity.ok(new Response(service.updateUser(user, email)));
