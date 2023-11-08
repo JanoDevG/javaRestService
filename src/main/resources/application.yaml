@@ -2,7 +2,7 @@ spring:
   application:
     name: restServiceTest
   profiles:
-    active: dev
+    active: development
   devtools:
     restart:
       enable: true
@@ -19,8 +19,6 @@ spring:
 authorizationProfile:
   user: ${USER}
   password: ${PASSWORD}
-
-
 
 server:
   port: 8082

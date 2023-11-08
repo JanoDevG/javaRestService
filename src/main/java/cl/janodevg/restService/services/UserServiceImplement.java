@@ -10,9 +10,11 @@ import cl.janodevg.restService.common.validations.EmailValidationAnnotation;
 import cl.janodevg.restService.utils.ObtainRequestContext;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,6 +69,9 @@ public class UserServiceImplement implements UserService {
                 optionalUser.get().setPassword(user.getPassword());
             }
             updateDateLogin(user);
+            optionalUser.get().setIsActive(user.isActive());
+            optionalUser.get().setIsActive(user.isActive());
+            optionalUser.get().setPhones(user.getPhones());
             user.setModified(LocalDateTime.now().toString());
             user.setJWT(ObtainRequestContext.obtainRequestAuthorization());
             return repository.save(optionalUser.get());
@@ -80,6 +85,9 @@ public class UserServiceImplement implements UserService {
     public void deleteUser(@EmailValidationAnnotation String email) throws ResourceNotFoundException {
         Optional<User> optionalUser = repository.findByEmail(email);
         if (optionalUser.isPresent()) {
+            if (!optionalUser.get().isActive()){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "User is already inactive." );
+            }
             optionalUser.get().setIsActive(false);
         } else {
             throw new ResourceNotFoundException("Nothing user register with email: "
